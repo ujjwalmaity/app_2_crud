@@ -9,3 +9,8 @@ CREATE TABLE employee (
     email VARCHAR(255) UNIQUE NOT NULL,
     phone_number VARCHAR(15) NOT NULL
 );
+
+--changeset ujjwal:2
+--comment: alter table employee add unique phone_number
+ALTER TABLE employee
+ADD UNIQUE (phone_number);

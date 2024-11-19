@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -19,6 +18,8 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     private ModelMapper modelMapper;
+
+    private final ResourceNotFoundException employeeNotFoundException = new ResourceNotFoundException("Employee not found");
 
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
         employeeDto.setId(null);
@@ -32,12 +33,12 @@ public class EmployeeService {
         if (opEmployee.isPresent()) {
             return modelMapper.map(opEmployee.get(), EmployeeDto.class);
         }
-        throw new ResourceNotFoundException("Employee not found");
+        throw employeeNotFoundException;
     }
 
     public List<EmployeeDto> findAllEmployee() {
         List<Employee> all = employeeRepository.findAll();
-        return all.stream().map(employee -> modelMapper.map(employee, EmployeeDto.class)).collect(Collectors.toList());
+        return all.stream().map(employee -> modelMapper.map(employee, EmployeeDto.class)).toList();
     }
 
     public EmployeeDto updateEmployee(EmployeeDto employeeDto) {
@@ -48,7 +49,7 @@ public class EmployeeService {
             Employee savedEmployee = employeeRepository.save(employee);
             return modelMapper.map(savedEmployee, EmployeeDto.class);
         }
-        throw new ResourceNotFoundException("Employee not found");
+        throw employeeNotFoundException;
     }
 
     public void deleteEmployee(Long id) {
@@ -57,6 +58,6 @@ public class EmployeeService {
             employeeRepository.deleteById(id);
             return;
         }
-        throw new ResourceNotFoundException("Employee not found");
+        throw employeeNotFoundException;
     }
 }

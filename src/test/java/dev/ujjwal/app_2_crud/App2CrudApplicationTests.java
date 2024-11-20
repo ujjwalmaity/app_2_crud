@@ -8,7 +8,7 @@ class App2CrudApplicationTests {
 
     @Test
     void contextLoads() {
-        // Will do after development
+        // This test will pass if the application context loads successfully.
     }
 
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class EmployeeCacheService {
 
     private RedisTemplate<String, String> redisTemplate;
-    private final String REDIS_KEY_CRUD_EMPLOYEE = "CRUD_EMPLOYEE";
+    private static final String REDIS_KEY_CRUD_EMPLOYEE = "CRUD_EMPLOYEE";
 
     private ObjectMapper objectMapper;
 

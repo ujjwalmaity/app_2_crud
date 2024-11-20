@@ -38,7 +38,11 @@ public class EmployeeCacheService {
 
     // Delete from Redis
     public void deleteEmployeeFromRedis(Long id) {
-        redisTemplate.opsForHash().delete(REDIS_KEY_CRUD_EMPLOYEE, id.toString());
+        try {
+            redisTemplate.opsForHash().delete(REDIS_KEY_CRUD_EMPLOYEE, id.toString());
+        } catch (Exception e) {
+            //
+        }
     }
 
 }

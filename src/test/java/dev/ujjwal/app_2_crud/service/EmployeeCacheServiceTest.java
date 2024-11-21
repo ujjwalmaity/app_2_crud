@@ -3,7 +3,6 @@ package dev.ujjwal.app_2_crud.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.ujjwal.app_2_crud.entity.Employee;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,7 +32,59 @@ class EmployeeCacheServiceTest {
     private static final String REDIS_KEY_CRUD_EMPLOYEE = "CRUD_EMPLOYEE";
 
     @Test
-    void testGetEmployeeFromRedis() {
+    void testGetEmployeeFromRedis_Success() throws JsonProcessingException {
+        Long id = 1L;
+
+        String stringEmployee = "{\"id\":1,\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@gmail.com\",\"phoneNumber\":\"9876543210\"}";
+
+        Employee employee = new Employee();
+        employee.setId(1L);
+        employee.setFirstName("John");
+        employee.setLastName("Doe");
+        employee.setEmail("john@gmail.com");
+        employee.setPhoneNumber("9876543210");
+
+        when(redisTemplate.<String, String>opsForHash()).thenReturn(hashOperations);
+        when(hashOperations.get(REDIS_KEY_CRUD_EMPLOYEE, id.toString())).thenReturn(stringEmployee);
+        when(objectMapper.readValue(stringEmployee, Employee.class)).thenReturn(employee);
+
+        Employee result = employeeCacheService.getEmployeeFromRedis(id);
+
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("John", result.getFirstName());
+        assertEquals("Doe", result.getLastName());
+        assertEquals("john@gmail.com", result.getEmail());
+        assertEquals("9876543210", result.getPhoneNumber());
+        verify(hashOperations, times(1)).get(REDIS_KEY_CRUD_EMPLOYEE, id.toString());
+    }
+
+    @Test
+    void testGetEmployeeFromRedis_NotFound() throws JsonProcessingException {
+        Long id = 1L;
+
+        when(redisTemplate.<String, String>opsForHash()).thenReturn(hashOperations);
+        when(hashOperations.get(REDIS_KEY_CRUD_EMPLOYEE, id.toString())).thenReturn(null);
+
+        Employee result = employeeCacheService.getEmployeeFromRedis(id);
+
+        assertNull(result);
+        verify(hashOperations, times(1)).get(REDIS_KEY_CRUD_EMPLOYEE, id.toString());
+    }
+
+    @Test
+    void testGetEmployeeFromRedis_ExceptionHandling() throws JsonProcessingException {
+        Long id = 1L;
+
+        String stringEmployee = "{\"id\":1,\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@gmail.com\",\"phoneNumber\":\"9876543210\"}";
+
+        when(redisTemplate.<String, String>opsForHash()).thenReturn(hashOperations);
+        when(hashOperations.get(REDIS_KEY_CRUD_EMPLOYEE, id.toString())).thenReturn(stringEmployee);
+        when(objectMapper.readValue(stringEmployee, Employee.class)).thenThrow(new RuntimeException("Json Processing Exception"));
+
+        assertDoesNotThrow(() -> employeeCacheService.getEmployeeFromRedis(id));
+
+        verify(hashOperations, times(1)).get(REDIS_KEY_CRUD_EMPLOYEE, id.toString());
     }
 
     @Test

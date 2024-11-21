@@ -5,6 +5,7 @@ import dev.ujjwal.app_2_crud.entity.Employee;
 import dev.ujjwal.app_2_crud.exception.ResourceNotFoundException;
 import dev.ujjwal.app_2_crud.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class EmployeeService {
 
     private EmployeeRepository employeeRepository;
@@ -40,6 +42,7 @@ public class EmployeeService {
             employeeCacheService.saveEmployeeInRedis(employee);
             return modelMapper.map(employee, EmployeeDto.class);
         }
+        log.warn(employeeNotFoundException.toString());
         throw employeeNotFoundException;
     }
 
@@ -49,25 +52,22 @@ public class EmployeeService {
     }
 
     public EmployeeDto updateEmployee(EmployeeDto employeeDto) {
-        if (employeeDto.getId() == null) throw new ResourceNotFoundException("Invalid input");
-        Employee employee = modelMapper.map(employeeDto, Employee.class);
-        EmployeeDto emp = findEmployee(employee.getId());
-        if (emp != null) {
-            Employee savedEmployee = employeeRepository.save(employee);
-            employeeCacheService.saveEmployeeInRedis(savedEmployee);
-            return modelMapper.map(savedEmployee, EmployeeDto.class);
+        if (employeeDto.getId() == null) {
+            final ResourceNotFoundException resourceNotFoundException = new ResourceNotFoundException("Invalid input");
+            log.warn(resourceNotFoundException.toString());
+            throw resourceNotFoundException;
         }
-        throw employeeNotFoundException;
+        Employee employee = modelMapper.map(employeeDto, Employee.class);
+        findEmployee(employee.getId());
+        Employee savedEmployee = employeeRepository.save(employee);
+        employeeCacheService.saveEmployeeInRedis(savedEmployee);
+        return modelMapper.map(savedEmployee, EmployeeDto.class);
     }
 
     public void deleteEmployee(Long id) {
-        EmployeeDto emp = findEmployee(id);
-        if (emp != null) {
-            employeeCacheService.deleteEmployeeFromRedis(id);
-            employeeRepository.deleteById(id);
-            return;
-        }
-        throw employeeNotFoundException;
+        findEmployee(id);
+        employeeCacheService.deleteEmployeeFromRedis(id);
+        employeeRepository.deleteById(id);
     }
 
 }

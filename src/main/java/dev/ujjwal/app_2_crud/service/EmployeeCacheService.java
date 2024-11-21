@@ -3,11 +3,13 @@ package dev.ujjwal.app_2_crud.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.ujjwal.app_2_crud.entity.Employee;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class EmployeeCacheService {
 
     private RedisTemplate<String, String> redisTemplate;
@@ -21,7 +23,7 @@ public class EmployeeCacheService {
             String stringEmployee = (String) redisTemplate.opsForHash().get(REDIS_KEY_CRUD_EMPLOYEE, id.toString());
             if (stringEmployee != null) return objectMapper.readValue(stringEmployee, Employee.class);
         } catch (Exception e) {
-            //
+            log.error(e.toString());
         }
         return null;
     }
@@ -32,7 +34,7 @@ public class EmployeeCacheService {
             String stringEmployee = objectMapper.writeValueAsString(employee);
             redisTemplate.opsForHash().put(REDIS_KEY_CRUD_EMPLOYEE, employee.getId().toString(), stringEmployee);
         } catch (Exception e) {
-            //
+            log.error(e.toString());
         }
     }
 
@@ -41,7 +43,7 @@ public class EmployeeCacheService {
         try {
             redisTemplate.opsForHash().delete(REDIS_KEY_CRUD_EMPLOYEE, id.toString());
         } catch (Exception e) {
-            //
+            log.error(e.toString());
         }
     }
 

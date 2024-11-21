@@ -97,6 +97,7 @@ class EmployeeCacheServiceTest {
         employee.setPhoneNumber("9876543210");
 
         String stringEmployee = "{\"id\":1,\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@gmail.com\",\"phoneNumber\":\"9876543210\"}";
+
         when(objectMapper.writeValueAsString(employee)).thenReturn(stringEmployee);
         when(redisTemplate.<String, String>opsForHash()).thenReturn(hashOperations);
         doNothing().when(hashOperations).put(REDIS_KEY_CRUD_EMPLOYEE, employee.getId().toString(), stringEmployee);

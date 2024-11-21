@@ -30,6 +30,9 @@ class EmployeeServiceTest {
     private EmployeeCacheService employeeCacheService;
 
     @Mock
+    private KafkaService kafkaService;
+
+    @Mock
     private ModelMapper modelMapper;
 
     @BeforeEach
@@ -62,6 +65,7 @@ class EmployeeServiceTest {
 
         when(modelMapper.map(employeeDto, Employee.class)).thenReturn(employee);
         when(employeeRepository.save(employee)).thenReturn(savedEmployee);
+        doNothing().when(kafkaService).sendMessage(savedEmployee);
         when(modelMapper.map(savedEmployee, EmployeeDto.class)).thenReturn(savedEmployeeDto);
 
         EmployeeDto result = employeeService.saveEmployee(employeeDto);

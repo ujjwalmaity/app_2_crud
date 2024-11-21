@@ -23,4 +23,6 @@
 
     <logger name="dev.ujjwal.app_2_crud" level="trace"/>
 
+    <logger name="org.apache.kafka" level="error"/>
+
 </configuration>

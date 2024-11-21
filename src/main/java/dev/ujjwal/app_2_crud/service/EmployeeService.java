@@ -25,10 +25,13 @@ public class EmployeeService {
 
     private final ResourceNotFoundException employeeNotFoundException = new ResourceNotFoundException("Employee not found");
 
+    KafkaService kafkaService;
+
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
         employeeDto.setId(null);
         Employee employee = modelMapper.map(employeeDto, Employee.class);
         Employee savedEmployee = employeeRepository.save(employee);
+        kafkaService.sendMessage(savedEmployee);
         return modelMapper.map(savedEmployee, EmployeeDto.class);
     }
 

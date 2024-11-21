@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="loggingToConsole" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date %-5level %class %method [%thread] - %message %n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="loggingToFile" class="ch.qos.logback.core.FileAppender">
+        <file>.log/app_2_crud.log</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%date %-5level %class %method [%thread] - %message %n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- trace < debug < info < warn < error -->
+    <logger name="root" level="info">
+        <appender-ref ref="loggingToConsole"/>
+        <appender-ref ref="loggingToFile"/>
+    </logger>
+
+    <logger name="dev.ujjwal.app_2_crud" level="trace"/>
+
+</configuration>

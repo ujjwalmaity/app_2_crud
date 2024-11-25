@@ -21,6 +21,12 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        if (request.getRequestURI().startsWith("/api-docs") ||
+                request.getRequestURI().startsWith("/swagger-ui")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         StringBuilder logText = new StringBuilder();
 
         // Wrap the request and response

@@ -42,8 +42,10 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
         logText.append(request.getRequestURL()).append(" ");
         if (!requestParam.isEmpty()) logText.append(requestParam).append(" ");
         if (!requestBody.isEmpty()) logText.append(requestBody);
-//        request.getHeaderNames().asIterator().forEachRemaining(header ->
-//                logText.append("\n").append(header).append(": ").append(request.getHeader(header)));
+        /**
+         request.getHeaderNames().asIterator().forEachRemaining(header ->
+         logText.append("\n").append(header).append(": ").append(request.getHeader(header)));
+         */
 
         // Process the request
         filterChain.doFilter(wrappedRequest, wrappedResponse);

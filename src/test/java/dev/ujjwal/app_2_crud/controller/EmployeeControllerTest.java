@@ -2,6 +2,7 @@ package dev.ujjwal.app_2_crud.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.ujjwal.app_2_crud.dto.EmployeeDto;
+import dev.ujjwal.app_2_crud.dto.EmployeeRegisterDto;
 import dev.ujjwal.app_2_crud.service.EmployeeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ class EmployeeControllerTest {
         EmployeeDto inputEmployee = new EmployeeDto(null, "John", "Doe", "john@gmail.com", "9876543210");
         EmployeeDto savedEmployee = new EmployeeDto(1L, "John", "Doe", "john@gmail.com", "9876543210");
 
-        when(employeeService.saveEmployee(any(EmployeeDto.class))).thenReturn(savedEmployee);
+        when(employeeService.saveEmployee(any(EmployeeRegisterDto.class))).thenReturn(savedEmployee);
 
         mockMvc.perform(post("/api/v1/employee/save")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -46,7 +47,7 @@ class EmployeeControllerTest {
                 .andExpect(jsonPath("$.email").value("john@gmail.com"))
                 .andExpect(jsonPath("$.phoneNumber").value("9876543210"));
 
-        verify(employeeService, times(1)).saveEmployee(any(EmployeeDto.class));
+        verify(employeeService, times(1)).saveEmployee(any(EmployeeRegisterDto.class));
     }
 
     @Test

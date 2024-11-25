@@ -1,6 +1,7 @@
 package dev.ujjwal.app_2_crud.service;
 
 import dev.ujjwal.app_2_crud.dto.EmployeeDto;
+import dev.ujjwal.app_2_crud.dto.EmployeeRegisterDto;
 import dev.ujjwal.app_2_crud.entity.Employee;
 import dev.ujjwal.app_2_crud.exception.ResourceNotFoundException;
 import dev.ujjwal.app_2_crud.repository.EmployeeRepository;
@@ -27,9 +28,8 @@ public class EmployeeService {
 
     KafkaService kafkaService;
 
-    public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
-        employeeDto.setId(null);
-        Employee employee = modelMapper.map(employeeDto, Employee.class);
+    public EmployeeDto saveEmployee(EmployeeRegisterDto employeeRegisterDto) {
+        Employee employee = modelMapper.map(employeeRegisterDto, Employee.class);
         Employee savedEmployee = employeeRepository.save(employee);
         kafkaService.sendMessage(savedEmployee);
         return modelMapper.map(savedEmployee, EmployeeDto.class);

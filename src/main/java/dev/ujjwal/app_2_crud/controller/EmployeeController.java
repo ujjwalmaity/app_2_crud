@@ -1,6 +1,7 @@
 package dev.ujjwal.app_2_crud.controller;
 
 import dev.ujjwal.app_2_crud.dto.EmployeeDto;
+import dev.ujjwal.app_2_crud.dto.EmployeeRegisterDto;
 import dev.ujjwal.app_2_crud.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,9 +30,9 @@ public class EmployeeController {
 
     @PostMapping("/save")
     @Operation(summary = "Register")
-    public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody EmployeeDto employeeDto) {
-        log.trace(LOG_PLACE_HOLDER_3, httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), employeeDto);
-        EmployeeDto savedEmployee = employeeService.saveEmployee(employeeDto);
+    public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody EmployeeRegisterDto employeeRegisterDto) {
+        log.trace(LOG_PLACE_HOLDER_3, httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), employeeRegisterDto);
+        EmployeeDto savedEmployee = employeeService.saveEmployee(employeeRegisterDto);
         log.trace(savedEmployee.toString());
         return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }

@@ -1,6 +1,7 @@
 package dev.ujjwal.app_2_crud.service;
 
 import dev.ujjwal.app_2_crud.dto.EmployeeDto;
+import dev.ujjwal.app_2_crud.dto.EmployeeRegisterDto;
 import dev.ujjwal.app_2_crud.entity.Employee;
 import dev.ujjwal.app_2_crud.exception.ResourceNotFoundException;
 import dev.ujjwal.app_2_crud.repository.EmployeeRepository;
@@ -42,11 +43,11 @@ class EmployeeServiceTest {
 
     @Test
     void testSaveEmployee() {
-        EmployeeDto employeeDto = new EmployeeDto();
-        employeeDto.setFirstName("John");
-        employeeDto.setLastName("Doe");
-        employeeDto.setEmail("john@gmail.com");
-        employeeDto.setPhoneNumber("9876543210");
+        EmployeeRegisterDto employeeRegisterDto = new EmployeeRegisterDto();
+        employeeRegisterDto.setFirstName("John");
+        employeeRegisterDto.setLastName("Doe");
+        employeeRegisterDto.setEmail("john@gmail.com");
+        employeeRegisterDto.setPhoneNumber("9876543210");
 
         Employee employee = new Employee();
         employee.setFirstName("John");
@@ -63,12 +64,12 @@ class EmployeeServiceTest {
 
         EmployeeDto savedEmployeeDto = new EmployeeDto(1L, "John", "Doe", "john@gmail.com", "9876543210");
 
-        when(modelMapper.map(employeeDto, Employee.class)).thenReturn(employee);
+        when(modelMapper.map(employeeRegisterDto, Employee.class)).thenReturn(employee);
         when(employeeRepository.save(employee)).thenReturn(savedEmployee);
         doNothing().when(kafkaService).sendMessage(savedEmployee);
         when(modelMapper.map(savedEmployee, EmployeeDto.class)).thenReturn(savedEmployeeDto);
 
-        EmployeeDto result = employeeService.saveEmployee(employeeDto);
+        EmployeeDto result = employeeService.saveEmployee(employeeRegisterDto);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());

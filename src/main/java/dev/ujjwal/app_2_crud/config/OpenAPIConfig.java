@@ -19,7 +19,7 @@ public class OpenAPIConfig {
     }
 
     @Bean
-    public GroupedOpenApi usersApi() {
+    public GroupedOpenApi employeeApi() {
         return GroupedOpenApi.builder()
                 .group("employee")
                 .pathsToMatch("/api/v1/employee/**")

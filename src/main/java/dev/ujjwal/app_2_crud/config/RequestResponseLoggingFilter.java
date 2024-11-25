@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
-
+@Slf4j
 public class RequestResponseLoggingFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -29,21 +30,23 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
         // Log the request
         String requestParam = getQueryParams(request);
         String requestBody = new String(wrappedRequest.getBody(), StandardCharsets.UTF_8);
-        logText.append(request.getMethod()).append(" ").append(request.getRequestURI()).append("\n");
+        requestBody = requestBody.lines().map(String::trim).collect(Collectors.joining());
+        logText.append("Request: ").append(request.getMethod()).append(" ");
+        logText.append(request.getRequestURL()).append(" ");
+        if (!requestParam.isEmpty()) logText.append(requestParam).append(" ");
+        if (!requestBody.isEmpty()) logText.append(requestBody);
 //        request.getHeaderNames().asIterator().forEachRemaining(header ->
-//                logText.append(header).append(": ").append(request.getHeader(header)).append("\n"));
-        if (!requestParam.isEmpty()) logText.append(requestParam).append("\n");
-        if (!requestBody.isEmpty()) logText.append(requestBody).append("\n");
+//                logText.append("\n").append(header).append(": ").append(request.getHeader(header)));
 
         // Process the request
         filterChain.doFilter(wrappedRequest, wrappedResponse);
 
         // Log the response
         String responseBody = new String(wrappedResponse.getBody(), StandardCharsets.UTF_8);
-        logText.append("Status: ").append(response.getStatus()).append("\n");
-        if (!responseBody.isEmpty()) logText.append(responseBody).append("\n");
+        logText.append("\nResponse: ").append(response.getStatus()).append(" ");
+        if (!responseBody.isEmpty()) logText.append(responseBody);
 
-        logger.info(logText);
+        log.trace(logText.toString());
 
         // Write the response body back to the original response
         PrintWriter writer = response.getWriter();
@@ -80,7 +83,7 @@ class CustomHttpRequestWrapper extends HttpServletRequestWrapper {
             private final ByteArrayInputStream buffer = new ByteArrayInputStream(body);
 
             @Override
-            public int read() throws IOException {
+            public int read() {
                 return buffer.read();
             }
 

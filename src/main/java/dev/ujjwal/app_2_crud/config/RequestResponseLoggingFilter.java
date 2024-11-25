@@ -22,7 +22,8 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         if (request.getRequestURI().startsWith("/api-docs") ||
-                request.getRequestURI().startsWith("/swagger-ui")) {
+                request.getRequestURI().startsWith("/swagger-ui") ||
+                request.getRequestURI().startsWith("/h2-console")) {
             filterChain.doFilter(request, response);
             return;
         }

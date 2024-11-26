@@ -33,7 +33,7 @@ public class OpenAPIConfig {
         myContact.setEmail("ujjwalmaity98@gmail.com");
         myContact.setUrl("https://www.linkedin.com/in/ujjwalmaity");
         Info information = new Info()
-                .title("CRUD")
+                .title("App 2 CRUD")
                 .version("v1")
                 .description("API Documentation")
                 .contact(myContact);

@@ -9,16 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(EmployeeController.class)
+@WithMockUser
 class EmployeeControllerTest {
 
     @Autowired
@@ -38,6 +41,7 @@ class EmployeeControllerTest {
         when(employeeService.saveEmployee(any(EmployeeRegisterDto.class))).thenReturn(savedEmployee);
 
         mockMvc.perform(post("/api/v1/employee/save")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputEmployee)))
                 .andExpect(status().isCreated())
@@ -97,6 +101,7 @@ class EmployeeControllerTest {
         when(employeeService.updateEmployee(any(EmployeeDto.class))).thenReturn(updatedEmployee);
 
         mockMvc.perform(put("/api/v1/employee/update")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputEmployee)))
                 .andExpect(status().isOk())
@@ -114,6 +119,7 @@ class EmployeeControllerTest {
         doNothing().when(employeeService).deleteEmployee(1L);
 
         mockMvc.perform(delete("/api/v1/employee/1")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Success"));

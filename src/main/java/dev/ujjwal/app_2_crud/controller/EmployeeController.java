@@ -29,7 +29,9 @@ public class EmployeeController {
     private static final String LOG_PLACE_HOLDER_3 = "{} {} {}";
 
     @PostMapping("/save")
-    @Operation(summary = "Register")
+    @Operation(summary = "Register", parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(ref = "#/components/parameters/csrf")
+    })
     public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody EmployeeRegisterDto employeeRegisterDto) {
         log.trace(LOG_PLACE_HOLDER_3, httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), employeeRegisterDto);
         EmployeeDto savedEmployee = employeeService.saveEmployee(employeeRegisterDto);
@@ -56,7 +58,9 @@ public class EmployeeController {
     }
 
     @PutMapping("/update")
-    @Operation(summary = "Update")
+    @Operation(summary = "Update", parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(ref = "#/components/parameters/csrf")
+    })
     public ResponseEntity<EmployeeDto> updateEmployee(@RequestBody EmployeeDto employeeDto) {
         log.trace(LOG_PLACE_HOLDER_3, httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), employeeDto);
         EmployeeDto savedEmployee = employeeService.updateEmployee(employeeDto);
@@ -65,7 +69,9 @@ public class EmployeeController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete")
+    @Operation(summary = "Delete", parameters = {
+            @io.swagger.v3.oas.annotations.Parameter(ref = "#/components/parameters/csrf")
+    })
     public ResponseEntity<String> deleteEmployee(@PathVariable Long id) {
         log.trace(LOG_PLACE_HOLDER_3, httpServletRequest.getMethod(), httpServletRequest.getRequestURI(), id);
         employeeService.deleteEmployee(id);

@@ -142,6 +142,7 @@
     </dependencyManagement>
 
     <build>
+        <!-- <finalName>app_2_crud</finalName> -->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
